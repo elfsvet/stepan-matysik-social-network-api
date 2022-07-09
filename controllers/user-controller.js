@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Thought } = require('../models');
 // need to finish it
 //! /api/users
 
@@ -38,7 +38,7 @@ const userController = {
 
     // post a new user
     createUser({ body }, res) {
-        User.create(body)
+        User.create(body, { new: true, runValidators: true })
             .then(dbUserData => res.json(dbUserData))
             .catch(err => res.status(400).json(err));
     },
@@ -69,10 +69,10 @@ const userController = {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user found with this id!' });
                     return;
-               }
-//TODO:   work this out and see if you can display the data after the delete
-               return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
-                
+                }
+                //TODO:   work this out and see if you can display the data after the delete
+                return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
+
             })
             .catch(err => res.status(400).json(err));
     },
