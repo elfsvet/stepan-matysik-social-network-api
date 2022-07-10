@@ -14,11 +14,13 @@ const userController = {
                 console.log(err);
                 res.status(400).json(err);
             })
-
     },
+
     // get a single user by _id
     getUserById({ params }, res) {
-        User.findOne({ _id: params.id })
+        User.findOne(
+            { _id: params.id }
+        )
             .select('-__v')
             .sort({ _id: -1 })
             .then(dbUserData => {
@@ -32,9 +34,7 @@ const userController = {
                 console.log(err);
                 res.status(400).json(err);
             })
-
     },
-
 
     // post a new user
     createUser({ body }, res) {
@@ -43,11 +43,13 @@ const userController = {
             .catch(err => res.status(400).json(err));
     },
 
-
-
     // put a new user / update a user by _id
     updateUser({ params, body }, res) {
-        User.findAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
+        User.findOneAndUpdate(
+            { _id: params.id },
+            body,
+            { new: true, runValidators: true }
+        )
             .then(dbUserData => {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user found with this id!' });
@@ -59,30 +61,27 @@ const userController = {
                 console.log(err);
                 res.status(400).json(err);
             })
-
     },
 
     // delete a user by _id and delete a thought associated with the user
     deleteUser({ params }, res) {
-        User.findOneAndDelete({ _id: params.id })
+        User.findOneAndDelete(
+            { _id: params.id }
+        )
             .then(dbUserData => {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user found with this id!' });
                     return;
                 }
-                //TODO:   work this out and see if you can display the data after the delete
+                // work this out and see if you can display the data after the delete
+                //! Application deletes a user's associated thoughts when the user is deleted.
                 return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
-             
-
             })
-            .then(data => {
-                console.log('The User deleted')
-                res.json(data);
+            .then(()=>{
+                res.json({message: 'User deleted successfully!'});
             })
             .catch(err => res.status(400).json(err));
     },
-
-
 
     //! /api/users/:userId/friends/:friendId
 
@@ -102,6 +101,7 @@ const userController = {
             })
             .catch(err => res.status(400).json(err));
     },
+
     // delete to remove a friend from a user's friend list
     deleteFriend({ params }, res) {
         User.findOneAndUpdate(

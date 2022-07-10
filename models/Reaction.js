@@ -1,5 +1,6 @@
 // this is the subdocument schema for the Thought model
-const { Schema , Types} = require('mongoose');
+const { Schema, Types } = require('mongoose');
+const dateFormat = require('../utils/dateFormat');
 
 const reactionSchema = new Schema({
     reactionId: {
@@ -18,8 +19,14 @@ const reactionSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        // get: createAtVal => dateFormat(createAtVal)
+        get: createAtVal => dateFormat(createAtVal)
     }
-});
+},
+    {
+        toJSON: {
+            getters: true
+        }
+    }
+);
 
 module.exports = reactionSchema;
