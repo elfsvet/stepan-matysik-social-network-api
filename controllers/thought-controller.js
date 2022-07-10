@@ -11,6 +11,7 @@ const thoughtController = {
 
     },
 
+    // get to get a single thought by _id
     getThoughtById({ params }, res) {
         Thought.findOne({ _id: params.id })
             .then(dbThoughtData => res.json(dbThoughtData))
@@ -26,7 +27,7 @@ const thoughtController = {
                 return User.findOneAndUpdate(
                     // pass username thought text
                     //! DON'T FORGET TO PROVIDE userID in insomnia
-                    { username: body.username },
+                    { _id: body.userId },
                     { $push: { thoughts: dbThoughtData._id } },
                     { new: true })
             })
@@ -38,18 +39,56 @@ const thoughtController = {
             })
             .catch(err => res.status(400).json(err));
 
+    },
 
+    // put to update a thought by it's _id
+    updateThought({ params, body }, res) {
+        Thought.findOneAndUpdate(
+            { _id: params.id },
+            body,
+            { new: true, runValidators: true }
+        )
+            .then(dbThoughtData => {
+                if (!dbThoughtData) {
+                    res.status(404).json({ message: "No thought with this id!" })
+                    return;
+                }
+                res.json(dbThoughtData);
+            })
+            .catch(err => res.status(400).json(err));
+    },
+
+    // delete to remove a thought by it's _id
+    deleteThought({ params }, res) {
+        Thought.findOneAndDelete({ _id: params.id })
+            .then(dbThoughtData => {
+                if (!dbThoughtData) {
+                    res.status(404).json({ message: "No thought with this id!" })
+                    return;
+                }
+                // we should delete it from the user thoughts array
+                return User.findOneAndUpdate(
+                    { thoughts: params._id },
+                    { $pull: { thoughts: params._id } },
+                    { new: true }
+                )
+            })
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: "Thought deleted but no user with this id!" })
+                    return;
+                }
+                res.json({ message: "Thought successfully deleted!" })
+            })
+            .catch(err => res.status(400).json(err));
     },
 }
 
 
 
-// get to get a single thought by _id
 
 
-// put to update a thought by it's _id
 
-// delete to remove a thought by it's _id
 
 //! /api/thoughts/:thoughtId/reactions
 

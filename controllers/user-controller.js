@@ -71,10 +71,13 @@ const userController = {
                     return;
                 }
                 //TODO:   work this out and see if you can display the data after the delete
-                // return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
-                console.log('The User deleted')
-                res.json(dbUserData);
+                return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
+             
 
+            })
+            .then(data => {
+                console.log('The User deleted')
+                res.json(data);
             })
             .catch(err => res.status(400).json(err));
     },

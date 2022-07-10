@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 
 
-const {createThought, getAllThought, getThoughtById} = require('../../controllers/thought-controller')
+const {createThought, getAllThought, getThoughtById, updateThought, deleteThought} = require('../../controllers/thought-controller')
 
 router
 .route('/')
@@ -12,6 +12,8 @@ router
 router
 .route('/:id')
 .get(getThoughtById)
+.put(updateThought)
+.delete(deleteThought)
 
 
 //! /api/users/:userId/friends/:friendId
