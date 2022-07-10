@@ -68,20 +68,20 @@ const thoughtController = {
                 }
                 // we should delete it from the user thoughts array
                 return User.findOneAndUpdate(
-                    { thoughts: params._id },
-                    { $pull: { thoughts: params._id } },
-                    { new: true }
-                )
-            })
+                    { _id : { $in: thoughts }},
+                { $pull: { thoughts: _id } },
+                { new: true }
+            )
+    })
             .then(dbUserData => {
-                if (!dbUserData) {
-                    res.status(404).json({ message: "Thought deleted but no user with this id!" })
-                    return;
-                }
-                res.json({ message: "Thought successfully deleted!" })
-            })
-            .catch(err => res.status(400).json(err));
-    },
+        if (!dbUserData) {
+            res.status(404).json({ message: "Thought deleted but no user with this id!" })
+            return;
+        }
+        res.json({ message: "Thought successfully deleted!" })
+    })
+        .catch(err => res.status(400).json(err));
+},
 }
 
 
