@@ -34,3 +34,5 @@ ThoughtSchema.virtual('reactionCount', function () {
 const Thought = model('Thought', ThoughtSchema);
 
 module.exports = Thought;
+
+//  thoughts does not work to create with wrong username will created anyway. check it later.

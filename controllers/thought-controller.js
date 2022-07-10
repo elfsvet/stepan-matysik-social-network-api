@@ -11,31 +11,33 @@ const thoughtController = {
 
     },
 
-    getThoughtById({params},res){
-        Thought.findOne({_id: params.id})
-        .then(dbThoughtData => res.json(dbThoughtData))
-        .catch(err => res.status(400).json(err));
+    getThoughtById({ params }, res) {
+        Thought.findOne({ _id: params.id })
+            .then(dbThoughtData => res.json(dbThoughtData))
+            .catch(err => res.status(400).json(err));
 
     },
 
     // post to create a new thought( don't forget to push the created thought's to the associated user's thoughts array field) userId and username
     createThought({ body }, res) {
+
         Thought.create(body)
             .then(dbThoughtData => {
                 return User.findOneAndUpdate(
-                    // pass useid username thoughttext
-                    //! DONT FORGET TO PROVIDE userID in insomnia
-                    { _id: body.userId },
+                    // pass username thought text
+                    //! DON'T FORGET TO PROVIDE userID in insomnia
+                    { username: body.username },
                     { $push: { thoughts: dbThoughtData._id } },
                     { new: true })
             })
             .then(dbUserData => {
                 if (!dbUserData) {
-                    res.status(404).json({ message: 'No user' })
+                    res.status(404).json({ message: 'No user found with this username' })
                 }
                 res.json(dbUserData)
             })
             .catch(err => res.status(400).json(err));
+
 
     },
 }
