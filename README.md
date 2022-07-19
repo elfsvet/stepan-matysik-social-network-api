@@ -1,5 +1,3 @@
-# stepan-matysik-social-network-api
-
 # Stepan Matysik's Social Network API
 > Social Network API project.
 > A link to the walkthrough video is [_here_](https://youtu.be/R3Qp5U0_jTw).
